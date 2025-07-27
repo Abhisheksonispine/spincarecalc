@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spine Surgery Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            color: #495057;
+        }
+        
+        .nav-tab.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .nav-tab:hover:not(.active) {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+        
+        .content-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 25px;
+            background: #667eea;
+            border-radius: 2px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .form-group h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: end;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #495057;
+            font-size: 0.9em;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 10px 0;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 8px;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+            padding: 15px;
+            font-size: 1.1em;
+            margin-top: 20px;
+        }
+        
+        .implant-row, .admin-item {
+            display: flex;
+            gap: 10px;
+            align-items: end;
+            margin-bottom: 10px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .results {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .result-card {
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid;
+        }
+        
+        .result-card.surgery { border-left-color: #007bff; background: #e7f3ff; }
+        .result-card.ward { border-left-color: #28a745; background: #e8f5e8; }
+        .result-card.implant { border-left-color: #6f42c1; background: #f0e6ff; }
+        .result-card.robot { border-left-color: #fd7e14; background: #fff3e0; }
+        
+        .result-label {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .total-amount {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .total-amount h3 {
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        
+        .total-amount .amount {
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+        
+        .admin-section {
+            margin-bottom: 30px;
+        }
+        
+        .admin-section h4 {
+            color: #495057;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .admin-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        
+        .add-new-section {
+            border-top: 2px solid #dee2e6;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        
+        .budget-option {
+            background: #e8f5e8;
+            border: 2px solid #28a745;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .budget-option h3 {
+            color: #28a745;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+        
+        .option-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .detail-card {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .cost-breakdown {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .cost-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .cost-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.2em;
+            color: #28a745;
+        }
+        
+        .no-option {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .no-option h3 {
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+        
+        .hidden { display: none !important; }
+        
+        @media (max-width: 768px) {
+            .form-row { flex-direction: column; }
+            .nav-tabs { flex-direction: column; align-items: center; }
+            .implant-row, .admin-item { flex-direction: column; align-items: stretch; }
+            .header h1 { font-size: 2em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏥 Spine Surgery Calculator</h1>
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showTab('calculator')">
+                    🧮 Price Calculator
+                </button>
+                <button class="nav-tab" onclick="showTab('budget')">
+                    🎯 Budget Optimizer
+                </button>
+                <button class="nav-tab" onclick="showTab('admin')">
+                    ⚙️ Manage Prices
+                </button>
+            </div>
+        </div>
+
+        <!-- Price Calculator Section -->
+        <div id="calculator" class="content-section active">
+            <div class="section-title">Price Calculator</div>
+            
+            <div class="form-grid">
+                <!-- Surgery Codes -->
+                <div class="form-group">
+                    <h3>Surgery Codes</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Number of Codes (Max 6):</label>
+                            <select id="codeCount" onchange="generateCodeSelectors()">
+                                <option value="0">Select number of codes</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="codesContainer"></div>
+                </div>
+
+                <!-- Ward & Options -->
+                <div class="form-group">
+                    <h3>Ward & Options</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Ward Category:</label>
+                            <select id="wardCategory">
+                                <option value="">Select ward category</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="useMIPC" onchange="toggleMIPC()">
+                        <label for="useMIPC">MIPC Patient</label>
+                    </div>
+                    
+                    <div id="mipcSection" class="hidden">
+                        <label>MIPC Level:</label>
+                        <select id="mipcLevel">
+                            <option value="">Select MIPC level</option>
+                        </select>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="useHighRisk">
+                        <label for="useHighRisk">High Risk Surgery</label>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="useRobot" onchange="toggleRobot()">
+                        <label for="useRobot">Use Robot</label>
+                    </div>
+                    
+                    <div id="robotSection" class="hidden">
+                        <label>Robot Level:</label>
+                        <select id="robotLevel">
+                            <option value="">Select robot level</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Implants Section -->
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="useImplants" onchange="toggleImplants()">
+                    <label for="useImplants"><h3>Use Implants</h3></label>
+                </div>
+                
+                <div id="implantSection" class="hidden">
+                    <div id="implantsContainer"></div>
+                    <button type="button" class="btn btn-primary btn-small" onclick="addImplantRow()">
+                        ➕ Add Implant
+                    </button>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-full" onclick="calculatePrice()">
+                Calculate Total Cost
+            </button>
+        </div>
+
+        <!-- Budget Optimizer Section -->
+        <div id="budget" class="content-section">
+            <div class="section-title">Budget Optimizer</div>
+            
+            <div class="form-grid">
+                <!-- Budget Input -->
+                <div class="form-group">
+                    <h3>Patient Budget</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Budget (INR):</label>
+                            <input type="number" id="patientBudget" placeholder="Enter budget amount" min="10000">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Surgery Configuration -->
+                <div class="form-group">
+                    <h3>Surgery Configuration</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Number of Surgery Types:</label>
+                            <select id="numSurgeries" onchange="generateSurgeryInputs()">
+                                <option value="1">1 Surgery Type</option>
+                                <option value="2">2 Surgery Types</option>
+                                <option value="3">3 Surgery Types</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="surgeryInputsContainer"></div>
+                </div>
+            </div>
+
+            <!-- Preferences -->
+            <div class="form-group">
+                <h3>Patient Preferences</h3>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label>Preferred Ward:</label>
+                        <select id="preferredWard">
+                            <option value="">Auto-optimize based on budget</option>
+                        </select>
+                    </div>
+                    <div class="form-col">
+                        <label>Robotic Preference:</label>
+                        <select id="roboticPreference">
+                            <option value="">Auto-optimize based on budget</option>
+                            <option value="robotic_low">Robotic - Low</option>
+                            <option value="robotic_medium">Robotic - Medium</option>
+                            <option value="robotic_high">Robotic - High</option>
+                            <option value="non_robotic">Non-Robotic</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="budgetMIPC" onchange="toggleBudgetMIPC()">
+                        <label for="budgetMIPC">MIPC Patient</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="budgetHighRisk">
+                        <label for="budgetHighRisk">High Risk Surgery</label>
+                    </div>
+                </div>
+                
+                <div id="budgetMipcSection" class="hidden">
+                    <label>MIPC Category:</label>
+                    <select id="budgetMipcLevel">
+                        <option value="">Select MIPC level</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-full" onclick="optimizeBudget()">
+                Generate Budget Options
+            </button>
+        </div>
+
+        <!-- Admin Panel Section -->
+        <div id="admin" class="content-section">
+            <div class="section-title">Price Management</div>
+            
+            <div style="display: flex; gap: 15px; margin-bottom: 25px;">
+                <button class="btn btn-success" onclick="savePrices()">
+                    💾 Save Changes
+                </button>
+                <button class="btn btn-secondary" onclick="resetPrices()">
+                    🔄 Reset to Defaults
+                </button>
+            </div>
+
+            <div class="form-grid">
+                <!-- Surgery Codes -->
+                <div class="admin-section">
+                    <h4>Surgery Codes</h4>
+                    <div class="admin-list" id="codesAdminList"></div>
+                    <div class="add-new-section">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <input type="text" id="newCodeName" placeholder="Code name (e.g., 10)">
+                            </div>
+                            <div class="form-col">
+                                <input type="number" id="newCodePrice" placeholder="Price">
+                            </div>
+                            <button class="btn btn-primary btn-small" onclick="addNewCode()">➕ Add</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ward Multipliers -->
+                <div class="admin-section">
+                    <h4>Ward Multipliers</h4>
+                    <div class="admin-list" id="wardsAdminList"></div>
+                    <div class="add-new-section">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <input type="text" id="newWardName" placeholder="Ward name">
+                            </div>
+                            <div class="form-col">
+                                <input type="number" step="0.01" id="newWardMultiplier" placeholder="Multiplier">
+                            </div>
+                            <button class="btn btn-primary btn-small" onclick="addNewWard()">➕ Add</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MIPC Multipliers -->
+                <div class="admin-section">
+                    <h4>MIPC Multipliers</h4>
+                    <div class="admin-list" id="mipcAdminList"></div>
+                    <div class="add-new-section">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <input type="text" id="newMipcName" placeholder="Level (e.g., 4x)">
+                            </div>
+                            <div class="form-col">
+                                <input type="number" step="0.1" id="newMipcMultiplier" placeholder="Multiplier">
+                            </div>
+                            <button class="btn btn-primary btn-small" onclick="addNewMipc()">➕ Add</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Robot Prices -->
+                <div class="admin-section">
+                    <h4>Robot Prices</h4>
+                    <div class="admin-list" id="robotAdminList"></div>
+                    <div class="add-new-section">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <input type="text" id="newRobotLevel" placeholder="Level name">
+                            </div>
+                            <div class="form-col">
+                                <input type="number" id="newRobotPrice" placeholder="Price">
+                            </div>
+                            <button class="btn btn-primary btn-small" onclick="addNewRobot()">➕ Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Implant Prices -->
+            <div class="admin-section">
+                <h4>Implant Prices</h4>
+                <div class="admin-list" id="implantsAdminList" style="max-height: 400px;"></div>
+                <div class="add-new-section">
+                    <div class="form-row">
+                        <div class="form-col">
+                            <input type="text" id="newImplantKey" placeholder="Implant key (e.g., new_screw)">
+                        </div>
+                        <div class="form-col">
+                            <input type="text" id="newImplantName" placeholder="Display name">
+                        </div>
+                        <div class="form-col">
+                            <input type="number" id="newImplantPrice" placeholder="Price">
+                        </div>
+                        <button class="btn btn-primary btn-small" onclick="addNewImplant()">➕ Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ward Charge -->
+            <div class="admin-section">
+                <h4>Base Ward Charge</h4>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label>Ward Charge:</label>
+                        <input type="number" id="wardChargeInput" placeholder="Base ward charge">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="results">
+            <div id="resultsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize pricing data with localStorage support
+        let pricingData = {
+            codePrices: {
+                '1': 7000, '2': 9000, '3': 16000, '4': 21000, '5': 27000,
+                '6': 41000, '7': 53000, '8': 65000, '9': 70000,
+                '9A': 89000, '9B': 101000, '9C': 126000
+            },
+            wardMultipliers: {
+                'general': 1, 'semispecial': 1.35, 'specialA': 1.75, 'ultraspecial': 2
+            },
+            mipcMultipliers: {
+                '1.5x': 1.5, '2x': 2, '2.5x': 2.5, '3x': 3
+            },
+            implantPrices: {
+                'jayon_screw': 6000,
+                'medtronic_legacy_screw': 18000,
+                'medtronic_solera_screw': 23000,
+                'medtronic_cervical_vertex_screw': 13000,
+                'jayon_cervical_atlas_screw': 8000,
+                'jayon_ctek_screw': 16000,
+                'jayon_rod': 3000,
+                'medtronic_rod': 10000,
+                'medtronic_cervical_rod': 10000,
+                'jayon_ctek_rod': 15000,
+                'jayon_cervical_rod': 2000,
+                'jayon_cage': 15000,
+                'medtronic_cage': 35000,
+                'medtronic_adaptix_cage': 52000,
+                'artificial_disc': 250000,
+                'balloon_kyphoplasty': 150000,
+                'cement': 15000
+            },
+            robotPrices: {
+                'low': 90000, 'medium': 135000, 'high': 180000
+            },
+            wardCharge: 80000
+        };
+
+        const implantDisplayNames = {
+            'jayon_screw': 'Jayon Lumbar Screw',
+            'medtronic_legacy_screw': 'Medtronic Legacy Screw',
+            'medtronic_solera_screw': 'Medtronic Solera Screw',
+            'medtronic_cervical_vertex_screw': 'Medtronic Cervical Vertex Screw',
+            'jayon_cervical_atlas_screw': 'Jayon Cervical Atlas Screw',
+            'jayon_ctek_screw': 'Jayon CTEK Screw',
+            'jayon_rod': 'Jayon Lumbar Rod',
+            'medtronic_rod': 'Medtronic Rod',
+            'medtronic_cervical_rod': 'Medtronic Cervical Rod',
+            'jayon_ctek_rod': 'Jayon CTEK Rod',
+            'jayon_cervical_rod': 'Jayon Cervical Rod',
+            'jayon_cage': 'Jayon Cage',
+            'medtronic_cage': 'Medtronic Cage',
+            'medtronic_adaptix_cage': 'Medtronic Adaptix Cage',
+            'artificial_disc': 'Artificial Disc',
+            'balloon_kyphoplasty': 'Balloon Kyphoplasty Kit',
+            'cement': 'Bone Cement'
+        };
+
+        // Load pricing data from localStorage on page load
+        function loadPricingData() {
+            const saved = localStorage.getItem('spineSurgeryPricing');
+            if (saved) {
+                pricingData = JSON.parse(saved);
+            }
+        }
+
+        // Save pricing data to localStorage
+        function savePricingData() {
+            localStorage.setItem('spineSurgeryPricing', JSON.stringify(pricingData));
+        }
+
+        // Initialize the application
+        function init() {
+            loadPricingData();
+            updateAllDropdowns();
+            updateAdminPanel();
+            generateSurgeryInputs();
+        }
+
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section and activate tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Hide results when switching tabs
+            document.getElementById('results').classList.remove('show');
+        }
+
+        // Update all dropdowns with current pricing data
+        function updateAllDropdowns() {
+            // Update ward categories
+            const wardSelects = ['wardCategory', 'preferredWard'];
+            wardSelects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    const currentValue = select.value;
+                    select.innerHTML = selectId === 'preferredWard' ? 
+                        '<option value="">Auto-optimize based on budget</option>' : 
+                        '<option value="">Select ward category</option>';
+                    
+                    Object.entries(pricingData.wardMultipliers).forEach(([ward, multiplier]) => {
+                        const option = document.createElement('option');
+                        option.value = ward;
+                        option.textContent = `${ward.charAt(0).toUpperCase() + ward.slice(1)} (${multiplier}x)`;
+                        select.appendChild(option);
+                    });
+                    
+                    if (currentValue) select.value = currentValue;
+                }
+            });
+
+            // Update MIPC levels
+            const mipcSelects = ['mipcLevel', 'budgetMipcLevel'];
+            mipcSelects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    const currentValue = select.value;
+                    select.innerHTML = '<option value="">Select MIPC level</option>';
+                    
+                    Object.entries(pricingData.mipcMultipliers).forEach(([level, multiplier]) => {
+                        const option = document.createElement('option');
+                        option.value = level;
+                        option.textContent = `${level} (${multiplier}x)`;
+                        select.appendChild(option);
+                    });
+                    
+                    if (currentValue) select.value = currentValue;
+                }
+            });
+
+            // Update robot levels
+            const robotSelect = document.getElementById('robotLevel');
+            if (robotSelect) {
+                const currentValue = robotSelect.value;
+                robotSelect.innerHTML = '<option value="">Select robot level</option>';
+                
+                Object.entries(pricingData.robotPrices).forEach(([level, price]) => {
+                    const option = document.createElement('option');
+                    option.value = level;
+                    option.textContent = `${level.charAt(0).toUpperCase() + level.slice(1)} (₹${price.toLocaleString()})`;
+                    robotSelect.appendChild(option);
+                });
+                
+                if (currentValue) robotSelect.value = currentValue;
+            }
+
+            // Update ward charge input
+            const wardChargeInput = document.getElementById('wardChargeInput');
+            if (wardChargeInput) {
+                wardChargeInput.value = pricingData.wardCharge;
+            }
+        }
+
+        // Generate code selectors
+        function generateCodeSelectors() {
+            const count = parseInt(document.getElementById('codeCount').value);
+            const container = document.getElementById('codesContainer');
+            
+            if (count === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            container.innerHTML = '';
+            for (let i = 1; i <= count; i++) {
+                const div = document.createElement('div');
+                div.className = 'form-row';
+                div.innerHTML = `
+                    <div class="form-col">
+                        <label>Surgery Code ${i}:</label>
+                        <select id="code${i}">
+                            <option value="">Select code</option>
+                            ${Object.entries(pricingData.codePrices).map(([code, price]) => 
+                                `<option value="${code}">${code} (₹${price.toLocaleString()})</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        // Toggle functions
+        function toggleMIPC() {
+            const section = document.getElementById('mipcSection');
+            const checkbox = document.getElementById('useMIPC');
+            section.classList.toggle('hidden', !checkbox.checked);
+        }
+
+        function toggleRobot() {
+            const section = document.getElementById('robotSection');
+            const checkbox = document.getElementById('useRobot');
+            section.classList.toggle('hidden', !checkbox.checked);
+        }
+
+        function toggleImplants() {
+            const section = document.getElementById('implantSection');
+            const checkbox = document.getElementById('useImplants');
+            section.classList.toggle('hidden', !checkbox.checked);
+            if (checkbox.checked && document.getElementById('implantsContainer').children.length === 0) {
+                addImplantRow();
+            }
+        }
+
+        function toggleBudgetMIPC() {
+            const section = document.getElementById('budgetMipcSection');
+            const checkbox = document.getElementById('budgetMIPC');
+            section.classList.toggle('hidden', !checkbox.checked);
+        }
+
+        // Add implant row
+        function addImplantRow() {
+            const container = document.getElementById('implantsContainer');
+            const div = document.createElement('div');
+            div.className = 'implant-row';
+            div.innerHTML = `
+                <div class="form-col">
+                    <label>Implant Type:</label>
+                    <select class="implant-type">
+                        <option value="">Select implant</option>
+                        ${Object.entries(implantDisplayNames).map(([key, name]) => 
+                            `<option value="${key}">${name}</option>`
+                        ).join('')}
+                    </select>
+                </div>
+                <div class="form-col" style="flex: 0.5;">
+                    <label>Quantity:</label>
+                    <input type="number" class="implant-quantity" min="0.1" step="0.1" value="1">
+                </div>
+                <button type="button" class="btn btn-danger btn-small" onclick="this.parentElement.remove()">
+                    🗑️
+                </button>
+            `;
+            container.appendChild(div);
+        }
+
+        // Generate surgery inputs for budget optimizer
+        function generateSurgeryInputs() {
+            const num = parseInt(document.getElementById('numSurgeries').value);
+            const container = document.getElementById('surgeryInputsContainer');
+            
+            container.innerHTML = '';
+            for (let i = 1; i <= num; i++) {
+                const div = document.createElement('div');
+                div.className = 'form-group';
+                div.style.marginTop = '15px';
+                div.innerHTML = `
+                    <h4 style="margin-bottom: 10px; color: #495057;">Surgery ${i}</h4>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Surgery Type:</label>
+                            <select id="surgery${i}Type" onchange="updateLevelInfo(${i})">
+                                <option value="fusion">Fusion</option>
+                                <option value="disc_replacement">Disc Replacement (ADR)</option>
+                                <option value="kypho">Kyphoplasty</option>
+                                <option value="vertebroplasty">Vertebroplasty</option>
+                                <option value="decompression">Decompression Alone</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label>Number of Levels:</label>
+                            <input type="number" id="surgery${i}Levels" min="1" value="1" onchange="updateLevelInfo(${i})">
+                        </div>
+                    </div>
+                    <div id="levelInfo${i}" class="level-info"></div>
+                `;
+                container.appendChild(div);
+                updateLevelInfo(i);
+            }
+        }
+
+        // Update level information display
+        function updateLevelInfo(surgeryIndex) {
+            const surgeryType = document.getElementById(`surgery${surgeryIndex}Type`).value;
+            const levels = parseInt(document.getElementById(`surgery${surgeryIndex}Levels`).value) || 1;
+            const infoDiv = document.getElementById(`levelInfo${surgeryIndex}`);
+            
+            let infoText = '';
+            let estimatedCost = 0;
+            
+            switch(surgeryType) {
+                case 'fusion':
+                    const screws = levels * 4; // 4 screws per level
+                    const rods = Math.ceil(levels / 2); // Usually 1 rod per 2 levels
+                    const cages = levels; // 1 cage per level
+                    estimatedCost = (pricingData.implantPrices.jayon_screw * screws) + 
+                                   (pricingData.implantPrices.jayon_rod * rods) + 
+                                   (pricingData.implantPrices.jayon_cage * cages);
+                    infoText = `${levels} level(s) = ${screws} screws + ${rods} rod(s) + ${cages} cage(s)`;
+                    break;
+                case 'disc_replacement':
+                    estimatedCost = pricingData.implantPrices.artificial_disc * levels;
+                    infoText = `${levels} level(s) = ${levels} artificial disc(s)`;
+                    break;
+                case 'kypho':
+                    estimatedCost = pricingData.implantPrices.balloon_kyphoplasty * levels;
+                    infoText = `${levels} level(s) = ${levels} kyphoplasty kit(s)`;
+                    break;
+                case 'vertebroplasty':
+                    estimatedCost = pricingData.implantPrices.cement * levels;
+                    infoText = `${levels} level(s) = ${levels} cement injection(s)`;
+                    break;
+                case 'decompression':
+                    estimatedCost = 0;
+                    infoText = `${levels} level(s) = No implants required`;
+                    break;
+            }
+            
+            infoDiv.innerHTML = `
+                <div style="font-size: 0.85em; color: #6c757d; margin-top: 5px; padding: 8px; background: #f8f9fa; border-radius: 5px; border-left: 3px solid #667eea;">
+                    <div><strong>Implants needed:</strong> ${infoText}</div>
+                    <div><strong>Estimated implant cost:</strong> ₹${estimatedCost.toLocaleString()}</div>
+                </div>
+            `;
+        }
+
+        // Calculate price
+        function calculatePrice() {
+            const wardCategory = document.getElementById('wardCategory').value;
+            const codeCount = parseInt(document.getElementById('codeCount').value) || 0;
+            
+            if (!wardCategory || codeCount === 0) {
+                alert('Please select ward category and at least one surgery code');
+                return;
+            }
+
+            // Get selected codes
+            const selectedCodes = [];
+            for (let i = 1; i <= codeCount; i++) {
+                const codeValue = document.getElementById(`code${i}`).value;
+                if (codeValue) {
+                    selectedCodes.push(codeValue);
+                } else {
+                    alert(`Please select surgery code ${i}`);
+                    return;
+                }
+            }
+
+            // Calculate multipliers
+            const wardMultiplier = pricingData.wardMultipliers[wardCategory];
+            const useMIPC = document.getElementById('useMIPC').checked;
+            const mipcLevel = document.getElementById('mipcLevel').value;
+            const mipcMultiplier = useMIPC && mipcLevel ? pricingData.mipcMultipliers[mipcLevel] : 1;
+            const combinedMultiplier = wardMultiplier * mipcMultiplier;
+            const useHighRisk = document.getElementById('useHighRisk').checked;
+            const highRiskMultiplier = useHighRisk ? 2 : 1;
+
+            // Calculate surgery charges
+            const codeTotal = selectedCodes.reduce((sum, code) => sum + (pricingData.codePrices[code] || 0), 0);
+            const surgeryCharge = codeTotal * 2.53 * combinedMultiplier;
+
+            // Calculate ward charge
+            const wardCharge = pricingData.wardCharge * combinedMultiplier * highRiskMultiplier;
+
+            // Calculate implant charges
+            let implantCharge = 0;
+            if (document.getElementById('useImplants').checked) {
+                const implantRows = document.querySelectorAll('.implant-row');
+                implantRows.forEach(row => {
+                    const type = row.querySelector('.implant-type').value;
+                    const quantity = parseFloat(row.querySelector('.implant-quantity').value) || 0;
+                    if (type && quantity > 0) {
+                        implantCharge += (pricingData.implantPrices[type] || 0) * quantity;
+                    }
+                });
+            }
+
+            // Calculate robot charges
+            let robotCharge = 0;
+            if (document.getElementById('useRobot').checked) {
+                const robotLevel = document.getElementById('robotLevel').value;
+                if (robotLevel) {
+                    robotCharge = pricingData.robotPrices[robotLevel] || 0;
+                }
+            }
+
+            const total = Math.round(surgeryCharge + wardCharge + implantCharge + robotCharge);
+
+            // Display results
+            displayPriceResults({
+                surgeryCharge: Math.round(surgeryCharge),
+                wardCharge: Math.round(wardCharge),
+                implantCharge: Math.round(implantCharge),
+                robotCharge,
+                total,
+                selectedCodes,
+                wardMultiplier,
+                mipcMultiplier,
+                isHighRisk: useHighRisk
+            });
+        }
+
+        // Optimize budget - Enhanced with level-based calculations
+        function optimizeBudget() {
+            const budget = parseInt(document.getElementById('patientBudget').value);
+            const numSurgeries = parseInt(document.getElementById('numSurgeries').value);
+            
+            if (!budget || budget < 10000) {
+                alert('Please enter a valid budget (minimum ₹10,000)');
+                return;
+            }
+
+            // Get surgery types and levels
+            const surgeries = [];
+            for (let i = 1; i <= numSurgeries; i++) {
+                const surgeryType = document.getElementById(`surgery${i}Type`).value;
+                const levels = parseInt(document.getElementById(`surgery${i}Levels`).value) || 1;
+                surgeries.push({ type: surgeryType, levels: levels });
+            }
+
+            const isMIPC = document.getElementById('budgetMIPC').checked;
+            const mipcLevel = document.getElementById('budgetMipcLevel').value;
+            const isHighRisk = document.getElementById('budgetHighRisk').checked;
+            const preferredWard = document.getElementById('preferredWard').value;
+            const roboticPreference = document.getElementById('roboticPreference').value;
+
+            if (isMIPC && !mipcLevel) {
+                alert('Please select MIPC category');
+                return;
+            }
+
+            const mipcMultiplier = isMIPC && mipcLevel ? pricingData.mipcMultipliers[mipcLevel] : 1;
+            const highRiskMultiplier = isHighRisk ? 2 : 1;
+
+            // Calculate level-based implant costs
+            function calculateLevelBasedImplantCost(surgeries, implantTier = 'basic') {
+                let totalCost = 0;
+                
+                surgeries.forEach(surgery => {
+                    switch(surgery.type) {
+                        case 'fusion':
+                            const screws = surgery.levels * 4; // 4 screws per level
+                            const rods = Math.ceil(surgery.levels / 2); // 1 rod per 2 levels
+                            const cages = surgery.levels; // 1 cage per level
+                            
+                            if (implantTier === 'premium') {
+                                totalCost += (pricingData.implantPrices.medtronic_solera_screw || 23000) * screws;
+                                totalCost += (pricingData.implantPrices.medtronic_rod || 10000) * rods;
+                                totalCost += (pricingData.implantPrices.medtronic_adaptix_cage || 52000) * cages;
+                            } else if (implantTier === 'mid') {
+                                totalCost += (pricingData.implantPrices.medtronic_legacy_screw || 18000) * screws;
+                                totalCost += (pricingData.implantPrices.medtronic_rod || 10000) * rods;
+                                totalCost += (pricingData.implantPrices.medtronic_cage || 35000) * cages;
+                            } else { // basic
+                                totalCost += (pricingData.implantPrices.jayon_screw || 6000) * screws;
+                                totalCost += (pricingData.implantPrices.jayon_rod || 3000) * rods;
+                                totalCost += (pricingData.implantPrices.jayon_cage || 15000) * cages;
+                            }
+                            break;
+                        case 'disc_replacement':
+                            totalCost += (pricingData.implantPrices.artificial_disc || 250000) * surgery.levels;
+                            break;
+                        case 'kypho':
+                            totalCost += (pricingData.implantPrices.balloon_kyphoplasty || 150000) * surgery.levels;
+                            break;
+                        case 'vertebroplasty':
+                            totalCost += (pricingData.implantPrices.cement || 15000) * surgery.levels;
+                            break;
+                        case 'decompression':
+                            // No implants needed
+                            break;
+                    }
+                });
+                
+                return totalCost;
+            }
+
+            // Find optimal configuration
+            const wardOrder = preferredWard ? [preferredWard] : ['ultraspecial', 'specialA', 'semispecial', 'general'];
+            const codeOrder = Object.keys(pricingData.codePrices).sort((a, b) => 
+                pricingData.codePrices[b] - pricingData.codePrices[a]);
+            const implantTiers = ['premium', 'mid', 'basic'];
+
+            let bestOption = null;
+
+            for (let ward of wardOrder) {
+                if (!pricingData.wardMultipliers[ward]) continue;
+                
+                const wardMultiplier = pricingData.wardMultipliers[ward];
+                const combinedMultiplier = wardMultiplier * mipcMultiplier;
+
+                for (let code of codeOrder) {
+                    const codeValue = pricingData.codePrices[code];
+                    const surgeryCharge = codeValue * 2.53 * combinedMultiplier;
+                    const wardCharge = pricingData.wardCharge * combinedMultiplier * highRiskMultiplier;
+                    
+                    // Try different implant tiers
+                    for (let implantTier of implantTiers) {
+                        const implantCharge = calculateLevelBasedImplantCost(surgeries, implantTier);
+
+                        // Calculate robot charge
+                        let robotCharge = 0;
+                        const hasDecompressionOnly = surgeries.every(s => s.type === 'decompression');
+                        if (!hasDecompressionOnly) {
+                            if (roboticPreference === 'robotic_low') robotCharge = pricingData.robotPrices.low || 90000;
+                            else if (roboticPreference === 'robotic_medium') robotCharge = pricingData.robotPrices.medium || 135000;
+                            else if (roboticPreference === 'robotic_high') robotCharge = pricingData.robotPrices.high || 180000;
+                            else if (roboticPreference === 'non_robotic') robotCharge = 0;
+                            else {
+                                // Auto-optimize robot based on remaining budget
+                                const baseCost = surgeryCharge + wardCharge + implantCharge;
+                                const remainingBudget = budget - baseCost;
+                                
+                                if (remainingBudget >= (pricingData.robotPrices.high || 180000)) {
+                                    robotCharge = pricingData.robotPrices.high || 180000;
+                                } else if (remainingBudget >= (pricingData.robotPrices.medium || 135000)) {
+                                    robotCharge = pricingData.robotPrices.medium || 135000;
+                                } else if (remainingBudget >= (pricingData.robotPrices.low || 90000)) {
+                                    robotCharge = pricingData.robotPrices.low || 90000;
+                                } else {
+                                    robotCharge = 0;
+                                }
+                            }
+                        }
+
+                        const total = surgeryCharge + wardCharge + implantCharge + robotCharge;
+
+                        if (total <= budget) {
+                            const implantTierName = implantTier === 'premium' ? 'Premium (Medtronic)' : 
+                                                   implantTier === 'mid' ? 'Mid-range (Medtronic)' : 
+                                                   'Basic (Jayon)';
+                            const robotLevel = robotCharge === (pricingData.robotPrices.high || 180000) ? 'High' :
+                                              robotCharge === (pricingData.robotPrices.medium || 135000) ? 'Medium' :
+                                              robotCharge === (pricingData.robotPrices.low || 90000) ? 'Low' : 'None';
+                            
+                            bestOption = {
+                                ward,
+                                code,
+                                surgeryCharge: Math.round(surgeryCharge),
+                                wardCharge: Math.round(wardCharge),
+                                implantCharge: Math.round(implantCharge),
+                                robotCharge,
+                                total: Math.round(total),
+                                wardMultiplier,
+                                mipcMultiplier,
+                                surgeryDetails: surgeries.map(s => `${s.type} (${s.levels} level${s.levels > 1 ? 's' : ''})`).join(', '),
+                                implantTier: implantTierName,
+                                robotLevel: robotLevel
+                            };
+                            break;
+                        }
+                    }
+                    if (bestOption) break;
+                }
+                if (bestOption) break;
+            }
+
+            displayBudgetResults(bestOption, budget);
+        }
+
+        // Display price results
+        function displayPriceResults(results) {
+            const resultsDiv = document.getElementById('results');
+            const content = document.getElementById('resultsContent');
+            
+            content.innerHTML = `
+                <div class="section-title">Cost Breakdown</div>
+                <div class="result-grid">
+                    <div class="result-card surgery">
+                        <div class="result-label">Surgery Charge</div>
+                        <div class="result-value">₹${results.surgeryCharge.toLocaleString()}</div>
+                    </div>
+                    <div class="result-card ward">
+                        <div class="result-label">Ward Charge</div>
+                        <div class="result-value">₹${results.wardCharge.toLocaleString()}</div>
+                    </div>
+                    <div class="result-card implant">
+                        <div class="result-label">Implant Charge</div>
+                        <div class="result-value">₹${results.implantCharge.toLocaleString()}</div>
+                    </div>
+                    <div class="result-card robot">
+                        <div class="result-label">Robot Charge</div>
+                        <div class="result-value">₹${results.robotCharge.toLocaleString()}</div>
+                    </div>
+                </div>
+                
+                <div class="total-amount">
+                    <h3>Total Amount</h3>
+                    <div class="amount">₹${results.total.toLocaleString()}</div>
+                </div>
+                
+                <div style="margin-top: 20px; font-size: 0.9em; color: #6c757d;">
+                    <p><strong>Selected Codes:</strong> ${results.selectedCodes.join(', ')}</p>
+                    <p><strong>Multipliers:</strong> Ward: ${results.wardMultiplier}x, MIPC: ${results.mipcMultiplier}x${results.isHighRisk ? ', High Risk: 2x' : ''}</p>
+                </div>
+            `;
+            
+            resultsDiv.classList.add('show');
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Display budget results
+        function displayBudgetResults(option, budget) {
+            const resultsDiv = document.getElementById('results');
+            const content = document.getElementById('resultsContent');
+            
+            if (option) {
+                content.innerHTML = `
+                    <div class="section-title">Budget Optimization Results</div>
+                    <div class="budget-option">
+                        <h3>Optimal Configuration - ₹${option.total.toLocaleString()}</h3>
+                        
+                        <div class="option-details">
+                            <div class="detail-card">
+                                <div class="result-label">Ward Category</div>
+                                <div class="result-value">${option.ward.charAt(0).toUpperCase() + option.ward.slice(1)}</div>
+                            </div>
+                            <div class="detail-card">
+                                <div class="result-label">Surgery Code</div>
+                                <div class="result-value">${option.code}</div>
+                            </div>
+                            <div class="detail-card">
+                                <div class="result-label">Surgery Details</div>
+                                <div class="result-value" style="font-size: 0.9em;">${option.surgeryDetails}</div>
+                            </div>
+                            <div class="detail-card">
+                                <div class="result-label">Implant Tier</div>
+                                <div class="result-value">${option.implantTier}</div>
+                            </div>
+                            <div class="detail-card">
+                                <div class="result-label">Robot Level</div>
+                                <div class="result-value">${option.robotLevel}</div>
+                            </div>
+                            <div class="detail-card">
+                                <div class="result-label">Budget Used</div>
+                                <div class="result-value">${Math.round((option.total / budget) * 100)}%</div>
+                            </div>
+                            <div class="detail-card">
+                                <div class="result-label">Remaining</div>
+                                <div class="result-value">₹${(budget - option.total).toLocaleString()}</div>
+                            </div>
+                        </div>
+
+                        <div class="cost-breakdown">
+                            <h4 style="margin-bottom: 15px;">Cost Breakdown:</h4>
+                            <div class="cost-row">
+                                <span>Surgery Charge:</span>
+                                <span>₹${option.surgeryCharge.toLocaleString()}</span>
+                            </div>
+                            <div class="cost-row">
+                                <span>Ward Charge:</span>
+                                <span>₹${option.wardCharge.toLocaleString()}</span>
+                            </div>
+                            <div class="cost-row">
+                                <span>Implant Charge (Level-based):</span>
+                                <span>₹${option.implantCharge.toLocaleString()}</span>
+                            </div>
+                            <div class="cost-row">
+                                <span>Robot Charge:</span>
+                                <span>₹${option.robotCharge.toLocaleString()}</span>
+                            </div>
+                            <div class="cost-row">
+                                <span><strong>Total Cost:</strong></span>
+                                <span><strong>₹${option.total.toLocaleString()}</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                content.innerHTML = `
+                    <div class="section-title">Budget Optimization Results</div>
+                    <div class="no-option">
+                        <h3>No Suitable Configuration Found</h3>
+                        <p>The budget of ₹${budget.toLocaleString()} is insufficient for the selected surgery requirements. Please consider:</p>
+                        <ul style="text-align: left; margin-top: 15px;">
+                            <li>Increasing the budget</li>
+                            <li>Reducing the number of levels</li>
+                            <li>Choosing less complex surgery types</li>
+                            <li>Removing robotic preference</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            resultsDiv.classList.add('show');
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Admin panel functions
+        function updateAdminPanel() {
+            updateAdminList('codesAdminList', pricingData.codePrices, 'Code');
+            updateAdminList('wardsAdminList', pricingData.wardMultipliers, 'Ward');
+            updateAdminList('mipcAdminList', pricingData.mipcMultipliers, 'MIPC');
+            updateAdminList('robotAdminList', pricingData.robotPrices, 'Robot');
+            updateImplantsAdminList();
+        }
+
+        function updateAdminList(containerId, data, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            Object.entries(data).forEach(([key, value]) => {
+                const div = document.createElement('div');
+                div.className = 'admin-item';
+                div.innerHTML = `
+                    <div class="form-col">
+                        <span style="font-weight: 500;">${type === 'Ward' ? key.charAt(0).toUpperCase() + key.slice(1) : key}:</span>
+                    </div>
+                    <div class="form-col">
+                        <input type="number" ${type === 'Ward' || type === 'MIPC' ? 'step="0.01"' : ''} 
+                               value="${value}" 
+                               onchange="updatePriceValue('${containerId.replace('AdminList', '')}', '${key}', this.value)">
+                    </div>
+                    <button class="btn btn-danger btn-small" onclick="removeItem('${containerId.replace('AdminList', '')}', '${key}')">
+                        🗑️
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateImplantsAdminList() {
+            const container = document.getElementById('implantsAdminList');
+            container.innerHTML = '';
+            
+            Object.entries(pricingData.implantPrices).forEach(([key, value]) => {
+                const div = document.createElement('div');
+                div.className = 'admin-item';
+                div.innerHTML = `
+                    <div class="form-col">
+                        <span style="font-weight: 500; font-size: 0.9em;">${implantDisplayNames[key] || key}:</span>
+                    </div>
+                    <div class="form-col">
+                        <input type="number" value="${value}" 
+                               onchange="updatePriceValue('implants', '${key}', this.value)">
+                    </div>
+                    <button class="btn btn-danger btn-small" onclick="removeItem('implants', '${key}')">
+                        🗑️
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updatePriceValue(category, key, value) {
+            const numValue = parseFloat(value) || 0;
+            
+            switch(category) {
+                case 'codes':
+                    pricingData.codePrices[key] = numValue;
+                    break;
+                case 'wards':
+                    pricingData.wardMultipliers[key] = numValue;
+                    break;
+                case 'mipc':
+                    pricingData.mipcMultipliers[key] = numValue;
+                    break;
+                case 'robot':
+                    pricingData.robotPrices[key] = numValue;
+                    break;
+                case 'implants':
+                    pricingData.implantPrices[key] = numValue;
+                    break;
+            }
+            
+            updateAllDropdowns();
+            generateCodeSelectors();
+        }
+
+        function removeItem(category, key) {
+            if (!confirm(`Are you sure you want to remove ${key}?`)) return;
+            
+            switch(category) {
+                case 'codes':
+                    delete pricingData.codePrices[key];
+                    break;
+                case 'wards':
+                    delete pricingData.wardMultipliers[key];
+                    break;
+                case 'mipc':
+                    delete pricingData.mipcMultipliers[key];
+                    break;
+                case 'robot':
+                    delete pricingData.robotPrices[key];
+                    break;
+                case 'implants':
+                    delete pricingData.implantPrices[key];
+                    delete implantDisplayNames[key];
+                    break;
+            }
+            
+            updateAdminPanel();
+            updateAllDropdowns();
+            generateCodeSelectors();
+        }
+
+        // Add new item functions
+        function addNewCode() {
+            const name = document.getElementById('newCodeName').value.trim();
+            const price = parseFloat(document.getElementById('newCodePrice').value) || 0;
+            
+            if (!name || price <= 0) {
+                alert('Please enter valid code name and price');
+                return;
+            }
+            
+            pricingData.codePrices[name] = price;
+            document.getElementById('newCodeName').value = '';
+            document.getElementById('newCodePrice').value = '';
+            updateAdminPanel();
+            updateAllDropdowns();
+            generateCodeSelectors();
+        }
+
+        function addNewWard() {
+            const name = document.getElementById('newWardName').value.trim().toLowerCase();
+            const multiplier = parseFloat(document.getElementById('newWardMultiplier').value) || 0;
+            
+            if (!name || multiplier <= 0) {
+                alert('Please enter valid ward name and multiplier');
+                return;
+            }
+            
+            pricingData.wardMultipliers[name] = multiplier;
+            document.getElementById('newWardName').value = '';
+            document.getElementById('newWardMultiplier').value = '';
+            updateAdminPanel();
+            updateAllDropdowns();
+        }
+
+        function addNewMipc() {
+            const name = document.getElementById('newMipcName').value.trim();
+            const multiplier = parseFloat(document.getElementById('newMipcMultiplier').value) || 0;
+            
+            if (!name || multiplier <= 0) {
+                alert('Please enter valid MIPC level and multiplier');
+                return;
+            }
+            
+            pricingData.mipcMultipliers[name] = multiplier;
+            document.getElementById('newMipcName').value = '';
+            document.getElementById('newMipcMultiplier').value = '';
+            updateAdminPanel();
+            updateAllDropdowns();
+        }
+
+        function addNewRobot() {
+            const level = document.getElementById('newRobotLevel').value.trim().toLowerCase();
+            const price = parseFloat(document.getElementById('newRobotPrice').value) || 0;
+            
+            if (!level || price <= 0) {
+                alert('Please enter valid robot level and price');
+                return;
+            }
+            
+            pricingData.robotPrices[level] = price;
+            document.getElementById('newRobotLevel').value = '';
+            document.getElementById('newRobotPrice').value = '';
+            updateAdminPanel();
+            updateAllDropdowns();
+        }
+
+        function addNewImplant() {
+            const key = document.getElementById('newImplantKey').value.trim().toLowerCase();
+            const name = document.getElementById('newImplantName').value.trim();
+            const price = parseFloat(document.getElementById('newImplantPrice').value) || 0;
+            
+            if (!key || !name || price <= 0) {
+                alert('Please enter valid implant key, name, and price');
+                return;
+            }
+            
+            pricingData.implantPrices[key] = price;
+            implantDisplayNames[key] = name;
+            document.getElementById('newImplantKey').value = '';
+            document.getElementById('newImplantName').value = '';
+            document.getElementById('newImplantPrice').value = '';
+            updateAdminPanel();
+        }
+
+        // Save and reset functions
+        function savePrices() {
+            // Update ward charge from input
+            const wardChargeInput = document.getElementById('wardChargeInput');
+            if (wardChargeInput.value) {
+                pricingData.wardCharge = parseFloat(wardChargeInput.value) || 80000;
+            }
+            
+            savePricingData();
+            alert('Prices saved successfully!');
+        }
+
+        function resetPrices() {
+            if (!confirm('Are you sure you want to reset all prices to defaults? This cannot be undone.')) return;
+            
+            localStorage.removeItem('spineSurgeryPricing');
+            location.reload();
+        }
+
+        // Initialize the application when page loads
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
